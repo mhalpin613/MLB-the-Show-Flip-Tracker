@@ -1,0 +1,14 @@
+/Users/mhalpin/Documents/FlipTracker/obj/Debug/net9.0/FlipTracker.GeneratedMSBuildEditorConfig.editorconfig
+/Users/mhalpin/Documents/FlipTracker/obj/Debug/net9.0/FlipTracker.AssemblyInfoInputs.cache
+/Users/mhalpin/Documents/FlipTracker/obj/Debug/net9.0/FlipTracker.AssemblyInfo.cs
+/Users/mhalpin/Documents/FlipTracker/obj/Debug/net9.0/FlipTracker.csproj.CoreCompileInputs.cache
+/Users/mhalpin/Documents/FlipTracker/bin/Debug/net9.0/FlipTracker
+/Users/mhalpin/Documents/FlipTracker/bin/Debug/net9.0/FlipTracker.deps.json
+/Users/mhalpin/Documents/FlipTracker/bin/Debug/net9.0/FlipTracker.runtimeconfig.json
+/Users/mhalpin/Documents/FlipTracker/bin/Debug/net9.0/FlipTracker.dll
+/Users/mhalpin/Documents/FlipTracker/bin/Debug/net9.0/FlipTracker.pdb
+/Users/mhalpin/Documents/FlipTracker/obj/Debug/net9.0/FlipTracker.dll
+/Users/mhalpin/Documents/FlipTracker/obj/Debug/net9.0/refint/FlipTracker.dll
+/Users/mhalpin/Documents/FlipTracker/obj/Debug/net9.0/FlipTracker.pdb
+/Users/mhalpin/Documents/FlipTracker/obj/Debug/net9.0/FlipTracker.genruntimeconfig.cache
+/Users/mhalpin/Documents/FlipTracker/obj/Debug/net9.0/ref/FlipTracker.dll
