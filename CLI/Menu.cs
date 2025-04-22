@@ -14,13 +14,16 @@ public static class Menu
     {
         var api = new ShowDDClient(client);
         var flipper = new Flipper(api);
+        var logger = new FlipLogger();
 
         string prompt = """
         MLB The Show 25 Daily-Flips
         [1] Check Player Price
         [2] Find Today's Best Flips
         [3] Find Budget Flips
-        [4] Exit
+        [4] Log Flip
+        [5] View Profits
+        [6] Exit
         Choose Option > 
         """;
 
@@ -33,7 +36,7 @@ public static class Menu
 
             if (!int.TryParse(input, out int choice))
             {
-                Console.WriteLine("❌ Invalid input. Please enter 1–4.\n");
+                Console.WriteLine("❌ Invalid input. Please enter 1–6.\n");
                 continue;
             }
 
@@ -49,6 +52,12 @@ public static class Menu
                     await HandleBudgetFlipFinder(flipper);
                     break;
                 case 4:
+                    HandleProfitEntry(logger);
+                    break;
+                case 5:
+                    ShowTotalProfit(logger);
+                    break;
+                case 6:
                     Console.WriteLine("👋 Exiting...");
                     loop = false;
                     break;
@@ -71,7 +80,7 @@ public static class Menu
         Console.WriteLine($"\n🔎 Searching for profitable flips under {maxBuy} stubs...\n");
 
         var flips = await flipper.GetFlipsAsync(
-            minProfit: 300,
+            minProfit: 250,
             maxBuy: maxBuy,
             rarities: new List<string> { "diamond", "gold" }
         );
@@ -115,6 +124,49 @@ public static class Menu
             }
             Console.WriteLine(new string('-', 76));
         }
+    }
+
+    static void HandleProfitEntry(FlipLogger logger)
+    {
+        Console.Write("Enter player name: ");
+        string? name = Console.ReadLine();
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            Console.WriteLine("❌ Invalid name.");
+            return;
+        }
+
+        Console.Write("Enter team: ");
+        string? team = Console.ReadLine();
+        if (string.IsNullOrWhiteSpace(team))
+        {
+            Console.WriteLine("❌ Invalid team.");
+            return;
+        }
+
+        Console.Write("Enter buy price: ");
+        if (!int.TryParse(Console.ReadLine(), out int buy) || buy < 0)
+        {
+            Console.WriteLine("❌ Invalid buy price.");
+            return;
+        }
+
+        Console.Write("Enter sell price: ");
+        if (!int.TryParse(Console.ReadLine(), out int sell) || sell <= 0)
+        {
+            Console.WriteLine("❌ Invalid sell price.");
+            return;
+        }
+
+        logger.LogFlip(name.Trim(), team.Trim(), buy, sell);
+        int profit = (int)(sell * 0.9 - buy);
+        Console.WriteLine($"✅ Logged! Profit: {profit} stubs\n");
+    }
+
+    public static void ShowTotalProfit(FlipLogger logger)
+    {
+        int total = logger.GetTotalProfit();
+        Console.WriteLine($"\n💰 Total Profit: {total} stubs\n");
     }
 
     private static async Task HandleTopFlipFinder(Flipper flipper)
