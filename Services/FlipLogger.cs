@@ -1,4 +1,5 @@
 using FlipTracker.Models;
+using FlipTracker.CLI;
 using Microsoft.Data.Sqlite;
 
 namespace FlipTracker.Services;
@@ -26,39 +27,32 @@ public class FlipLogger
         cmd.ExecuteNonQuery();
     }
 
-    public int GetTotalProfit()
+    public void ShowProfitLedger()
     {
+        var flips = new List<Flip>();
+        int totalProfit = 0;
+
         using var conn = DatabaseService.GetConnection();
         conn.Open();
 
-        var cmd = conn.CreateCommand();
-        cmd.CommandText = "SELECT Name, Team, Buy, Sell, Profit, Timestamp FROM Flips ORDER BY Timestamp DESC;";
-        
+        using var cmd = conn.CreateCommand();
+        cmd.CommandText = "SELECT Name, Team, Buy, Sell, Profit FROM Flips";
+
         using var reader = cmd.ExecuteReader();
-
-        Console.WriteLine("\n📈 Flip History:\n");
-        Console.WriteLine($"{"Name",-22} {"Team",-12} {"Buy",6} {"Sell",6} {"Profit",7} {"Timestamp",20}");
-        Console.WriteLine(new string('-', 78));
-
-        int totalProfit = 0;
-
         while (reader.Read())
         {
-            string name = reader.GetString(0);
-            string team = reader.GetString(1);
-            int buy = reader.GetInt32(2);
-            int sell = reader.GetInt32(3);
-            int profit = reader.GetInt32(4);
-            string timestamp = reader.GetDateTime(5).ToString("yyyy-MM-dd HH:mm");
-
-            totalProfit += profit;
-
-            Console.WriteLine($"{name,-22} {team,-12} {buy,6} {sell,6} {profit,7} {timestamp,20}");
+            var flip = new Flip(
+                reader.GetString(0),  // Name
+                reader.GetString(1),  // Team
+                reader.GetInt32(2),   // Buy
+                reader.GetInt32(3),   // Sell
+                reader.GetInt32(4)    // Profit (Margin)
+            );
+            flips.Add(flip);
+            totalProfit += flip.Margin;
         }
-
-        Console.WriteLine(new string('-', 78));
-
-        return totalProfit;
+        Console.WriteLine("\n📝 Flips Ledger 📝\n");
+        Printer.PrintFlipsTable(flips);
+        Console.WriteLine($"📈 Total Profit: {totalProfit} stubs\n");
     }
-
 }

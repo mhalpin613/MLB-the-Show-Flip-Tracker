@@ -48,6 +48,10 @@
             "Microsoft.Data.Sqlite": {
               "target": "Package",
               "version": "[9.0.4, )"
+            },
+            "Spectre.Console": {
+              "target": "Package",
+              "version": "[0.50.0, )"
             }
           },
           "imports": [

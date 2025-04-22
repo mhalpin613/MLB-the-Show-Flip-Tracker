@@ -1,48 +1,113 @@
-namespace FlipTracker.CLI;
-using FlipTracker.Utils;
 using FlipTracker.Models;
+using Spectre.Console;
+
+namespace FlipTracker.CLI;
 
 public static class Printer
 {
-    public static void PrintFlipsTable(List<Flip> flips, bool topFlips = false)
+    public static void PrintFlipsTable(List<Flip> flips)
     {
-        if (topFlips) Console.WriteLine("\n📈 Top 25 Flips\n");
-        Console.WriteLine($"{"Name",-22} {"Team",-14} {"Buy",10} {"Sell",10} {"Margin",10}");
-        Console.WriteLine(new string('-', 70));
+        var table = new Table()
+            .Border(TableBorder.Rounded)
+            .AddColumn("[bold]Name[/]")
+            .AddColumn("Team")
+            .AddColumn("Buy")
+            .AddColumn("Sell")
+            .AddColumn("Margin");
 
         foreach (var flip in flips)
         {
-            string buy = $"{Colors.BLUE}{flip.Buy,10}{Colors.RESET}";
-            string sell = $"{Colors.RED}{flip.Sell,10}{Colors.RESET}";
-            string margin = $"{Colors.GREEN}{flip.Margin,10}{Colors.RESET}";
-
-            Console.WriteLine($"{flip.Name,-22} {flip.Team,-14} {buy} {sell} {margin}");
+            table.AddRow(
+                flip.Name,
+                flip.Team,
+                $"[cyan]{flip.Buy.ToString()}[/]",
+                $"[red]{flip.Sell.ToString()}[/]",
+                $"[green]{flip.Margin}[/]"
+            );
         }
-        Console.WriteLine(new string('-', 70));
+        AnsiConsole.Write(table);
+        AnsiConsole.WriteLine();
     }
 
-    public static void PrintHeader()
+    public static void PrintPlayerResults(List<Player> players)
     {
-        Console.WriteLine($"{"Name",-25}{"Rarity",-12}{"OVR",-7}{"Team",-12}{"Buy Now",10}{"Sell Now",10}");
-        Console.WriteLine(new string('-', 76));
-    }
+        var table = new Table().Border(TableBorder.Rounded);
 
-    public static void PrintTableRow(string name, string rarity, int ovr, string team, int buy, int sell)
-    {
-        // Optional: adjust width/padding
-        string line = $"{name,-25}{rarity,-12}{ovr,-7}{team,-12}{buy,10}{sell,10}";
+        table.AddColumn("[bold white]Name[/]");
+        table.AddColumn("[bold cyan]Rarity[/]");
+        table.AddColumn("[bold]OVR[/]");
+        table.AddColumn("[bold]Team[/]");
+        table.AddColumn("[blue]Buy Now[/]");
+        table.AddColumn("[red]Sell Now[/]");
 
-        // Color by rarity
-        string color = rarity.ToLower() switch
+        foreach (var p in players)
         {
-            "diamond" => Colors.CYAN, // cyan
-            "gold" => Colors.YELLOW,    // yellow
-            "silver" => Colors.WHITE,  // white
-            "bronze" => Colors.RED,  // red
-            "common" => Colors.GRAY,  // gray
-            _ => ""
-        };
+            string rarityColor = p.Rarity switch
+            {
+                "Diamond" => "cyan",
+                "Gold" => "gold1",
+                "Silver" => "silver",
+                "Bronze" => "darkorange3",
+                _ => "grey62"
+            };
 
-        Console.WriteLine($"{color}{line}{Colors.RESET}");
+            table.AddRow(
+                p.Name,
+                $"[{rarityColor}]{p.Rarity}[/]",
+                p.Ovr.ToString(),
+                p.Team,
+                $"[blue]{p.Buy}[/]",
+                $"[red]{p.Sell}[/]"
+            );
+        }
+
+        AnsiConsole.Write(table);
+        AnsiConsole.WriteLine();
+    }
+
+    public static void PrintProfitLog(List<Flip> flips)
+    {
+        var table = new Table()
+            .Border(TableBorder.Rounded)
+            .Title("Flip Profit Log")
+            .AddColumn("Name")
+            .AddColumn("Team")
+            .AddColumn(new TableColumn("Buy").RightAligned())
+            .AddColumn(new TableColumn("Sell").RightAligned())
+            .AddColumn(new TableColumn("Margin").RightAligned());
+
+        foreach (var flip in flips)
+        {
+            table.AddRow(
+                flip.Name,
+                flip.Team,
+                $"[blue]{flip.Buy}[/]",
+                $"[red]{flip.Sell}[/]",
+                $"[green]{flip.Margin}[/]"
+            );
+        }
+
+        AnsiConsole.Write(table);
+        AnsiConsole.WriteLine();
+    }
+
+    public static void PrintSectionHeader(string title)
+    {
+        AnsiConsole.Write(new Rule($"[bold yellow]{title}[/]").RuleStyle("grey").Centered());
+    }
+
+    public static void PrintSuccess(string message)
+    {
+        AnsiConsole.MarkupLine($"[green]✔ {message}[/]");
+    }
+
+    public static void PrintWarning(string message)
+    {
+        AnsiConsole.MarkupLine($"[yellow]! {message}[/]");
+    }
+
+    public static void PrintError(string message)
+    {
+        AnsiConsole.MarkupLine($"[red]✖ {message}[/]");
     }
 }

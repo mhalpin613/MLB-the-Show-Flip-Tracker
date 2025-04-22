@@ -39,3 +39,4 @@
 /Users/mhalpin/Documents/FlipTracker/bin/Debug/net9.0/runtimes/win-x64/native/e_sqlite3.dll
 /Users/mhalpin/Documents/FlipTracker/bin/Debug/net9.0/runtimes/win-x86/native/e_sqlite3.dll
 /Users/mhalpin/Documents/FlipTracker/obj/Debug/net9.0/FlipTrac.87668C0E.Up2Date
+/Users/mhalpin/Documents/FlipTracker/bin/Debug/net9.0/Spectre.Console.dll
