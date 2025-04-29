@@ -12,7 +12,10 @@ FlipTracker scrapes **MLB The Show 25’s Community Market API** and analyzes li
 - 📈 Identifying the **Top 25 daily flips** by profit margin  
 - 💰 Filtering **budget flips** within a custom stub cap  
 - 🧾 **Tracking and logging flip profits** locally using SQLite 
-- 📊 Viewing your full profit ledger with detailed statistics  
+- 📊 Viewing your full profit ledger with detailed statistics
+- !!! Currently working on long term predictions for investing in position players !!!
+
+![Player Projection](./Images/img1.png)
 
 All data is visualized with **Spectre.Console** tables and prompts, providing a modern CLI experience.
 
