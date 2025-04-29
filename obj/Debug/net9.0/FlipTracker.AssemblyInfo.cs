@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FlipTracker")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7b2085b131c70e6b424812da538dce2817dada69")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5f5ddd448dbdf8975d9d6282f3b5d6377963bdf1")]
 [assembly: System.Reflection.AssemblyProductAttribute("FlipTracker")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FlipTracker")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

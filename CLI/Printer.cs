@@ -91,6 +91,49 @@ public static class Printer
         AnsiConsole.WriteLine();
     }
 
+    public static void ShowPlayerProjection(CurrentAttributes current, CurrentAttributes projected)
+    {
+        var table = new Table()
+            .AddColumn(new TableColumn("[bold]Stat[/]").Centered())
+            .AddColumn(new TableColumn("[bold]Change[/]").Centered())
+            .Border(TableBorder.Rounded);
+
+        void AddStat(string name, int oldVal, int newVal)
+        {
+            int diff = newVal - oldVal;
+            string arrow;
+            string diffText;
+
+            if (diff > 0)
+            {
+                arrow = "➔";
+                diffText = $"[green]{newVal} (+{diff})[/]";
+            }
+            else if (diff < 0)
+            {
+                arrow = "➔";
+                diffText = $"[red]{newVal} ({diff})[/]";
+            }
+            else
+            {
+                arrow = "➔";
+                diffText = $"{newVal} (None)";
+            }
+
+            table.AddRow($"{name}", $"{oldVal} {arrow} {diffText}");
+        }
+
+        AddStat("Contact vs R", current.ContactVsRight, projected.ContactVsRight);
+        AddStat("Power vs R", current.PowerVsRight, projected.PowerVsRight);
+        AddStat("Contact vs L", current.ContactVsLeft, projected.ContactVsLeft);
+        AddStat("Power vs L", current.PowerVsLeft, projected.PowerVsLeft);
+        AddStat("Clutch", current.Clutch, projected.Clutch);
+        AddStat("Vision", current.Vision, projected.Vision);
+        AddStat("Discipline", current.Discipline, projected.Discipline);
+
+        AnsiConsole.Write(table);
+    }
+
     public static void PrintSectionHeader(string title)
     {
         AnsiConsole.Write(new Rule($"[bold yellow]{title}[/]").RuleStyle("grey").Centered());

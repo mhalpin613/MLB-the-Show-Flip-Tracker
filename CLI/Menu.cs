@@ -5,15 +5,15 @@ using System.Collections.Generic;
 using FlipTracker.Services;
 using FlipTracker.Models;
 using FlipTracker.Utils;
+using FlipTracker.CLI;
 using Spectre.Console;
 
 namespace FlipTracker.CLI;
 
 public static class Menu
 {
-    public static async Task ShowMainMenu(HttpClient client)
+    public static async Task ShowMainMenu(ShowDdClient api, ProjectionReader reader)
     {
-        var api = new ShowDDClient(client);
         var flipper = new Flipper(api);
         var logger = new FlipLogger();
 
@@ -31,7 +31,8 @@ public static class Menu
                         "3. Find Budget Flips",
                         "4. Log Flip",
                         "5. View Profits",
-                        "6. Exit"
+                        "6. Player Projection",
+                        "7. Exit"
                     }));
 
             switch (choice[0])
@@ -52,6 +53,9 @@ public static class Menu
                     logger.ShowProfitLedger();
                     break;
                 case '6':
+                    HandleRosterPrediction(reader);
+                    break;
+                case '7':
                     AnsiConsole.MarkupLine("[yellow]👋 Exiting...[/]");
                     loop = false;
                     break;
@@ -82,7 +86,7 @@ public static class Menu
         Printer.PrintFlipsTable(flips);
     }
 
-    private static async Task HandlePlayerLookup(ShowDDClient api)
+    private static async Task HandlePlayerLookup(ShowDdClient api)
     {
         var name = AnsiConsole.Ask<string>("Enter a [green]player name[/] (e.g. 'Joe Ryan'):");
 
@@ -120,5 +124,105 @@ public static class Menu
         var topFlips = await flipper.GetFlipsAsync();
         Spinner.Stop();
         Printer.PrintFlipsTable(topFlips);
+    }
+    
+    private static void HandleRosterPrediction(ProjectionReader reader)
+    {
+        var name = AnsiConsole.Ask<string>("Enter [green]player name[/]:");
+
+        var stats = reader.FindPlayerStats(name);
+        if (stats == null)
+        {
+            AnsiConsole.MarkupLine("[red]❌ No projection found for that player.[/]");
+            return;
+        }
+        
+        var debugTable = new Table();
+        debugTable.AddColumn("Stat");
+        debugTable.AddColumn("Value");
+
+        foreach (var prop in stats.GetType().GetProperties())
+        {
+            debugTable.AddRow(prop.Name, prop.GetValue(stats)?.ToString() ?? "null");
+        }
+
+        AnsiConsole.Write(debugTable);
+
+        /*var table = new Table();
+        table.HideHeaders();
+        table.AddColumn(new TableColumn("Field").LeftAligned());
+        table.AddColumn(new TableColumn("Value").LeftAligned());
+
+        table.AddRow("Team", "Cubs");
+        table.AddRow("Name", "Pete Crow-Armstrong");
+        table.AddRow("Rarity", "Gold");
+        table.AddRow("Ovr", "82");
+        table.AddRow("PA vs R", player.PAvR.ToString("00"));
+        table.AddRow("PA vs L", player.PAvL.ToString("00"));
+        table.AddRow("PA w RISP", player.PAwRisp.ToString("00"));
+        table.AddRow("Contact v R", player.CvR.ToString("00"));
+        table.AddRow("Power v R", player.PvR.ToString("00"));
+        table.AddRow("Contact v L", player.CvL.ToString("00"));
+        table.AddRow("Power v L", player.PvL.ToString("00"));
+        table.AddRow("Clutch", player.Clutch.ToString("00"));
+        table.AddRow("Vision", player.Vis.ToString("00"));
+        table.AddRow("Discipline", player.Disc.ToString("00"));
+        table.AddRow("Price", "0");
+
+        var panel = new Panel(table)
+        {
+            Header = new PanelHeader("Player Info", Justify.Center),
+            Border = BoxBorder.Rounded,
+            Padding = new Padding(1, 1, 1, 1)
+        };
+
+        AnsiConsole.Write(panel);*/
+        
+        /*var stats2 = new PlayerStats
+        {
+            AVGvR = 0.310,
+            AVGvL = 0.214,
+            ISOvR = 0.262,
+            ISOvL = 0.179,
+            Kper = 23.0,
+            BBper = 4.9,
+            AVGwRISP = 0.313
+        };
+
+        var current = new CurrentAttributes
+        {
+            ContactVsRight = 51,
+            ContactVsLeft = 57,
+            PowerVsRight = 50,
+            PowerVsLeft = 34,
+            Vision = 52,
+            Discipline = 40,
+            Clutch = 75
+        };*/
+        
+        var stats2 = new PlayerStats
+        {
+            AVGvR = 0.226,
+            AVGvL = 0.353,
+            ISOvR = 0.226,
+            ISOvL = 0.000,
+            Kper = 24.7,
+            BBper = 7.8,
+            AVGwRISP = 0.333
+        };
+
+        var current = new CurrentAttributes
+        {
+            ContactVsRight = 59,
+            ContactVsLeft = 54,
+            PowerVsRight = 60,
+            PowerVsLeft = 56,
+            Vision = 44,
+            Discipline = 49,
+            Clutch = 89
+        };
+
+        var projected = ProjectionCalculatorV2.Project(stats2, current);
+        CLI.Printer.ShowPlayerProjection(current, projected);
     }
 }

@@ -5,9 +5,9 @@ namespace FlipTracker.Services;
 
 public class Flipper
 {
-    private readonly ShowDDClient _client;
+    private readonly ShowDdClient _client;
 
-    public Flipper(ShowDDClient client)
+    public Flipper(ShowDdClient client)
     {
         _client = client;
     }

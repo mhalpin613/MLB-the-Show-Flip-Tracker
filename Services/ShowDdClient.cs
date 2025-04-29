@@ -4,12 +4,12 @@ using System.Text.Json;
 
 namespace FlipTracker.Services;
 
-public class ShowDDClient
+public class ShowDdClient
 {
     private readonly HttpClient _client;
     private const string BaseUrl = "https://mlb25.theshow.com/apis/listings.json";
 
-    public ShowDDClient(HttpClient client)
+    public ShowDdClient(HttpClient client)
     {
         _client = client;
     }
