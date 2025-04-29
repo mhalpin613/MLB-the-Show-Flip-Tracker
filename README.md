@@ -15,6 +15,7 @@ FlipTracker scrapes **MLB The Show 25’s Community Market API** and analyzes li
 - 📊 Viewing your full profit ledger with detailed statistics
 - !!! Currently working on long term predictions for investing in position players !!!
 
+- **Data gathered from fangraphs**
 ![Player Projection](./Images/img1.png)
 
 All data is visualized with **Spectre.Console** tables and prompts, providing a modern CLI experience.
